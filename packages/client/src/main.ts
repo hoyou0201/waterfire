@@ -1,20 +1,30 @@
 import { Client, type Room } from "@colyseus/sdk";
 import {
+  DEFAULT_LEVEL_ID,
+  type Element,
   type JoinOptions,
+  type LevelResult,
+  type Phase,
   type PlayerInfo,
+  type Progress,
   ROOM_NAME,
   type ServerMessages,
+  TICK_RATE,
+  createState,
   encodeInput,
   getLevel,
 } from "@waterfire/shared";
 import { Keyboard } from "./input.ts";
+import { Predictor } from "./predictor.ts";
 import { draw, resize } from "./render.ts";
-import { SnapshotBuffer } from "./snapshots.ts";
-
-const STORAGE_KEY = "waterfire.login";
+import { loadLogin, loadProgress, saveLogin, saveProgress } from "./storage.ts";
+import { Ui } from "./ui.ts";
 
 // 개발 중에는 Vite(5173)와 게임 서버(2567)가 따로 뜬다. 운영에서는 같은 주소.
 const endpoint = import.meta.env.DEV ? `${location.protocol}//${location.hostname}:2567` : location.origin;
+const TICK_MS = 1000 / TICK_RATE;
+/** 탭이 잠깐 멈췄다 돌아왔을 때 한 번에 따라잡을 최대 틱 */
+const MAX_CATCHUP_TICKS = 5;
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game")!;
 const ctx = canvas.getContext("2d")!;
@@ -23,27 +33,36 @@ const form = document.querySelector<HTMLFormElement>("#login")!;
 const loginError = document.querySelector<HTMLParagraphElement>("#login-error")!;
 
 const keyboard = new Keyboard(window);
-const snapshots = new SnapshotBuffer();
-let room: Room | null = null;
-let players: PlayerInfo[] = [];
-let level = getLevel("test-01");
-let lastSentInput = -1;
-resize(canvas, level);
+let level = getLevel(DEFAULT_LEVEL_ID);
+const predictor = new Predictor(level);
 
-function loadLogin(): Partial<JoinOptions> {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}");
-  } catch {
-    return {};
-  }
+let room: Room | null = null;
+let phase: Phase = "lobby";
+let players: PlayerInfo[] = [];
+let progress: Progress = loadProgress();
+let countdown = 0;
+let lastResult: LevelResult | null = null;
+
+const send = <T>(type: string, payload?: T) => room?.send(type, payload);
+
+const ui = new Ui({
+  pickElement: (el) => send("pickElement", el),
+  pickLevel: (id) => send("pickLevel", id),
+  ready: (r) => send("ready", r),
+  restart: () => send("restart"),
+  nextLevel: () => send("nextLevel"),
+  leaveLevel: () => send("leaveLevel"),
+});
+
+function myElement(): Element | null {
+  return players.find((p) => p.sessionId === room?.sessionId)?.element ?? null;
 }
 
-function saveLogin(login: JoinOptions) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(login));
-  } catch {
-    // 저장이 안 되는 환경이면 다음에 다시 입력하면 된다
-  }
+function setLevel(id: string) {
+  if (id === level.id) return;
+  level = getLevel(id);
+  predictor.reset(level);
+  resize(canvas, level);
 }
 
 function setStatus(text: string | null) {
@@ -54,9 +73,17 @@ function setStatus(text: string | null) {
 function updateStatus() {
   if (!room) return;
   const partner = players.find((p) => p.sessionId !== room!.sessionId);
-  if (!partner) setStatus("상대를 기다리는 중…");
-  else if (!partner.connected) setStatus(`${partner.name} 님 재접속 대기 중…`);
+  if (phase !== "lobby" && partner && !partner.connected) setStatus(`${partner.name} 님 재접속 대기 중… (게임 일시정지)`);
   else setStatus(null);
+}
+
+function refreshUi() {
+  const inLevel = phase !== "lobby";
+  ui.showLobby(room && !inLevel ? { me: room.sessionId, players, levelId: level.id, progress } : null);
+  const won = inLevel && predictor.auth?.status === "won" && lastResult?.levelId === level.id;
+  ui.showResult(won ? lastResult : null, progress);
+  if (!inLevel) ui.toggleMenu(false);
+  updateStatus();
 }
 
 async function join(login: JoinOptions) {
@@ -65,26 +92,38 @@ async function join(login: JoinOptions) {
   room = r;
 
   r.onMessage("lobby", (msg: ServerMessages["lobby"]) => {
+    const wasPhase = phase;
+    phase = msg.phase;
     players = msg.players;
-    if (msg.levelId !== level.id) {
-      level = getLevel(msg.levelId);
-      resize(canvas, level);
-      snapshots.clear();
+    progress = saveProgress(msg.progress);
+    setLevel(msg.levelId);
+    if (phase === "countdown" && wasPhase !== "countdown") {
+      predictor.reset(level);
+      lastResult = null;
     }
-    updateStatus();
+    refreshUi();
   });
   r.onMessage("snapshot", (msg: ServerMessages["snapshot"]) => {
-    snapshots.push(msg.frame, msg.state, performance.now());
+    setLevel(msg.levelId);
+    phase = msg.phase;
+    countdown = msg.countdown;
+    const wasWon = predictor.auth?.status === "won";
+    predictor.onSnapshot(msg, r.sessionId, myElement());
+    if (wasWon !== (msg.state.status === "won")) refreshUi();
+  });
+  r.onMessage("result", (msg: ServerMessages["result"]) => {
+    lastResult = msg;
+    refreshUi();
   });
   r.onDrop(() => setStatus("연결이 끊겼습니다. 재접속 중…"));
-  r.onReconnect(() => {
-    lastSentInput = -1;
-    updateStatus();
-  });
+  r.onReconnect(() => updateStatus());
   r.onLeave(() => {
     room = null;
     setStatus("서버와 연결이 끊겼습니다. 새로고침해 주세요.");
   });
+
+  // 내 기록을 보내서 상대 기록과 합친다
+  r.send("progress", progress);
 }
 
 form.addEventListener("submit", async (e) => {
@@ -98,6 +137,7 @@ form.addEventListener("submit", async (e) => {
     await join(login);
     saveLogin(login);
     form.hidden = true;
+    refreshUi();
   } catch (err) {
     loginError.textContent = describeJoinError(err);
   } finally {
@@ -112,27 +152,75 @@ function describeJoinError(err: unknown): string {
   return `접속하지 못했습니다: ${message}`;
 }
 
-function frame(now: number) {
-  if (room) {
-    const bits = encodeInput(keyboard.read());
-    if (bits !== lastSentInput) {
-      room.send("input", bits);
-      lastSentInput = bits;
-    }
-  }
-  const restart = keyboard.restartProgress(now);
-  if (restart.fired) room?.send("restart");
+// 새로고침·탭 닫기는 정상 퇴장으로 알린다. 안 그러면 서버가 재접속을 60초 기다리며 자리를 잡아 둔다
+window.addEventListener("pagehide", () => {
+  void room?.leave(true);
+});
 
+window.addEventListener("keydown", (e) => {
+  if (e.code === "Escape" && phase === "playing" && !(e.target instanceof HTMLInputElement)) ui.toggleMenu();
+});
+
+/** 고정 60Hz 틱: 내 입력을 보내고 예측을 한 틱 진행한다 */
+function localTick() {
+  const me = myElement();
+  if (!room || phase !== "playing" || !me) return;
+  const bits = ui.menuOpen ? 0 : encodeInput(keyboard.read());
+  const seq = predictor.tick(me, bits);
+  if (seq !== null) room.send("input", { seq, bits });
+}
+
+let acc = 0;
+let lastTime = performance.now();
+let lastFrame = 0;
+
+/** 지난 호출 이후 흐른 시간만큼 틱을 돌린다 */
+function pump(now: number) {
+  acc += now - lastTime;
+  lastTime = now;
+  if (acc > MAX_CATCHUP_TICKS * TICK_MS) acc = MAX_CATCHUP_TICKS * TICK_MS;
+  while (acc >= TICK_MS) {
+    acc -= TICK_MS;
+    localTick();
+  }
+}
+
+// 보통은 화면 갱신(requestAnimationFrame)마다 틱을 돌린다. 창이 가려져 화면 갱신이 멈추면
+// 타이머로 대신 돌려서 입력 전송과 예측이 끊기지 않게 한다
+setInterval(() => {
+  const now = performance.now();
+  if (now - lastFrame > 100) pump(now);
+}, TICK_MS);
+
+function frame(now: number) {
+  lastFrame = now;
+  pump(now);
+
+  const restart = phase === "playing" ? keyboard.restartProgress(now) : { progress: 0, fired: false };
+  if (restart.fired) send("restart");
+
+  const inLevel = phase !== "lobby";
+  const state = (inLevel && (phase === "playing" ? predictor.view() : predictor.auth)) || createState(level);
   draw(ctx, {
     level,
-    state: snapshots.sample(now),
-    players,
+    state,
+    authStatus: inLevel ? (predictor.auth?.status ?? "playing") : "playing",
+    authDead: predictor.auth?.deadChar ?? null,
+    players: inLevel ? players : [],
     me: room?.sessionId ?? "",
+    countdown: phase === "countdown" ? Math.max(1, Math.ceil(countdown / TICK_RATE)) : null,
     restartProgress: restart.progress,
   });
   requestAnimationFrame(frame);
 }
+
+resize(canvas, level);
 requestAnimationFrame(frame);
+
+// 개발 중 브라우저 콘솔에서 상태를 들여다보기 위한 훅
+if (import.meta.env.DEV) {
+  Object.assign(window, { __wf: { predictor, keyboard, get phase() { return phase; }, get players() { return players; } } });
+}
 
 // 저장된 로그인 정보가 있으면 바로 입장 시도
 const saved = loadLogin();

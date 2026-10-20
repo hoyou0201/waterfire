@@ -8,7 +8,51 @@
   </head>
   <body>
     <main>
-      <canvas id="game"></canvas>
+      <div class="stage">
+        <canvas id="game"></canvas>
+
+        <section id="lobby" class="panel lobby" hidden>
+          <h2>캐릭터</h2>
+          <div class="chars">
+            <button type="button" class="char-card fire" data-el="fire">
+              <span class="char-icon"></span>
+              <span class="char-name">불</span>
+              <span class="char-owner"></span>
+            </button>
+            <button type="button" class="char-card water" data-el="water">
+              <span class="char-icon"></span>
+              <span class="char-name">물</span>
+              <span class="char-owner"></span>
+            </button>
+          </div>
+          <h2>레벨</h2>
+          <ol id="levels" class="levels"></ol>
+          <p id="level-hint" class="hint"></p>
+          <div class="ready-row">
+            <span id="partner-state" class="muted"></span>
+            <button type="button" id="ready-btn" class="primary">준비</button>
+          </div>
+        </section>
+
+        <section id="result" class="panel result" hidden>
+          <h2>클리어!</h2>
+          <p id="result-stars" class="stars"></p>
+          <p id="result-detail" class="muted"></p>
+          <div class="row">
+            <button type="button" data-act="restart">다시 하기</button>
+            <button type="button" data-act="lobby">레벨 선택</button>
+            <button type="button" data-act="next" class="primary">다음 레벨</button>
+          </div>
+        </section>
+
+        <section id="menu" class="panel menu" hidden>
+          <h2>메뉴</h2>
+          <button type="button" data-act="resume" class="primary">계속하기</button>
+          <button type="button" data-act="restart">처음부터 다시</button>
+          <button type="button" data-act="leave">레벨 나가기</button>
+          <p class="muted small">메뉴를 열어도 게임은 계속 진행됩니다.</p>
+        </section>
+      </div>
       <div id="status" class="status" hidden></div>
     </main>
 

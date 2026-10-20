@@ -1,10 +1,13 @@
 :root {
   --bg: #14161c;
   --panel: #1f232c;
+  --panel-2: #272c37;
+  --line: #333844;
   --text: #e8e6e3;
   --muted: #9aa0a6;
   --fire: #ff6b3d;
   --water: #3da5ff;
+  --gold: #f2c94c;
   --error: #ff7a7a;
   color-scheme: dark;
 }
@@ -22,6 +25,40 @@ body {
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
 
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.primary {
+  border: none;
+  background: linear-gradient(90deg, var(--fire), var(--water));
+  color: #fff;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 12px;
+}
+
 main {
   position: relative;
   display: grid;
@@ -30,10 +67,18 @@ main {
   padding: 16px;
 }
 
-canvas {
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
   max-width: 100%;
   max-height: 100%;
-  image-rendering: pixelated;
+}
+
+canvas {
+  display: block;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
   border-radius: 6px;
 }
 
@@ -47,6 +92,174 @@ canvas {
   background: var(--panel);
   color: var(--muted);
   font-size: 14px;
+}
+
+/* 캔버스 위에 띄우는 패널 */
+.panel {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(520px, calc(100% - 24px));
+  height: fit-content;
+  max-height: calc(100% - 24px);
+  overflow: auto;
+  padding: 20px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.panel h2 + * {
+  margin-bottom: 16px;
+}
+
+.chars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.char-card {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 12px;
+  border-width: 2px;
+}
+
+.char-card .char-icon {
+  width: 24px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.char-card.fire .char-icon {
+  background: var(--fire);
+}
+
+.char-card.water .char-icon {
+  background: var(--water);
+}
+
+.char-card.mine.fire {
+  border-color: var(--fire);
+}
+
+.char-card.mine.water {
+  border-color: var(--water);
+}
+
+.char-name {
+  font-weight: 600;
+}
+
+.char-owner {
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 1em;
+}
+
+.levels {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.levels button {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+}
+
+.levels button.selected {
+  border-color: var(--gold);
+}
+
+.levels .num {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.levels .stars {
+  font-size: 12px;
+}
+
+.stars {
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+
+.stars .off {
+  color: var(--line);
+}
+
+.hint {
+  min-height: 1.2em;
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ready-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ready-row button.is-ready {
+  background: var(--panel-2);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+
+.result {
+  text-align: center;
+  width: min(380px, calc(100% - 24px));
+}
+
+.result h2 {
+  font-size: 24px;
+  color: var(--text);
+}
+
+.result .stars {
+  font-size: 32px;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.menu {
+  display: grid;
+  gap: 8px;
+  width: min(280px, calc(100% - 24px));
+}
+
+.menu p {
+  margin: 4px 0 0;
+  text-align: center;
 }
 
 .login {
@@ -82,18 +295,16 @@ canvas {
   color: var(--muted);
 }
 
-.login input,
-.login button {
+.login input {
   font: inherit;
   padding: 8px 10px;
   border-radius: 6px;
-  border: 1px solid #333844;
+  border: 1px solid var(--line);
   background: var(--bg);
   color: var(--text);
 }
 
 .login button {
-  cursor: pointer;
   border: none;
   background: linear-gradient(90deg, var(--fire), var(--water));
   color: #fff;
