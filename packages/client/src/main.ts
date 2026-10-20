@@ -16,7 +16,8 @@ import {
 } from "@waterfire/shared";
 import { Keyboard } from "./input.ts";
 import { Predictor } from "./predictor.ts";
-import { draw, resize } from "./render.ts";
+import { loadAtlas } from "./art.ts";
+import { Renderer } from "./render.ts";
 import { loadLogin, loadProgress, saveLogin, saveProgress } from "./storage.ts";
 import { Ui } from "./ui.ts";
 
@@ -27,12 +28,20 @@ const TICK_MS = 1000 / TICK_RATE;
 const MAX_CATCHUP_TICKS = 5;
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game")!;
-const ctx = canvas.getContext("2d")!;
 const statusEl = document.querySelector<HTMLDivElement>("#status")!;
 const form = document.querySelector<HTMLFormElement>("#login")!;
 const loginError = document.querySelector<HTMLParagraphElement>("#login-error")!;
 
 const keyboard = new Keyboard(window);
+const renderer = new Renderer(canvas);
+
+/** 로비에서 배경으로 보여 줄 레벨 상태 (레벨마다 하나만 만든다) */
+const lobbyStates = new Map<string, ReturnType<typeof createState>>();
+function lobbyState(l: typeof level) {
+  let s = lobbyStates.get(l.id);
+  if (!s) lobbyStates.set(l.id, (s = createState(l)));
+  return s;
+}
 let level = getLevel(DEFAULT_LEVEL_ID);
 const predictor = new Predictor(level);
 
@@ -62,7 +71,7 @@ function setLevel(id: string) {
   if (id === level.id) return;
   level = getLevel(id);
   predictor.reset(level);
-  resize(canvas, level);
+  renderer.setLevel(level);
 }
 
 function setStatus(text: string | null) {
@@ -200,12 +209,12 @@ function frame(now: number) {
   if (restart.fired) send("restart");
 
   const inLevel = phase !== "lobby";
-  const state = (inLevel && (phase === "playing" ? predictor.view() : predictor.auth)) || createState(level);
-  draw(ctx, {
+  const state = (inLevel && (phase === "playing" ? predictor.view() : predictor.auth)) || lobbyState(level);
+  renderer.draw({
     level,
     state,
-    authStatus: inLevel ? (predictor.auth?.status ?? "playing") : "playing",
-    authDead: predictor.auth?.deadChar ?? null,
+    auth: inLevel ? predictor.auth : null,
+    now,
     players: inLevel ? players : [],
     me: room?.sessionId ?? "",
     countdown: phase === "countdown" ? Math.max(1, Math.ceil(countdown / TICK_RATE)) : null,
@@ -214,8 +223,11 @@ function frame(now: number) {
   requestAnimationFrame(frame);
 }
 
-resize(canvas, level);
+renderer.setLevel(level);
 requestAnimationFrame(frame);
+loadAtlas()
+  .then((atlas) => renderer.setAtlas(atlas))
+  .catch((err) => setStatus(`그림을 불러오지 못했습니다: ${(err as Error).message}`));
 
 // 개발 중 브라우저 콘솔에서 상태를 들여다보기 위한 훅
 if (import.meta.env.DEV) {

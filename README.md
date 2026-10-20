@@ -14,6 +14,8 @@ packages/shared   결정론적 시뮬레이션(물리·판정), 레벨 로더, �
 packages/server   Colyseus 서버. 방 1개, 로비 → 카운트다운 → 플레이, 60Hz 시뮬레이션, 20Hz 스냅샷
 packages/client   Vite + Canvas 2D 클라이언트. 내 입력을 즉시 반영하는 예측
 levels/           레벨 JSON (tools/genlevels.py로 생성)
+assets/art/v1/    아트 원본 시트
+packages/client/public/art/  게임에서 쓰는 아틀라스 (tools/build-art.mjs로 생성)
 ```
 
 ## 개발
@@ -55,3 +57,11 @@ pnpm test                    # 모든 레벨을 풀이 스크립트로 깨 보�
 ```
 
 레벨을 바꾸면 `packages/shared/src/solutions.ts`의 풀이도 맞춰야 테스트가 통과한다.
+
+## 아트 고치기
+
+```bash
+node tools/build-art.mjs   # assets/art/v1 → packages/client/public/art
+```
+
+원본 시트는 균등 격자가 아니라서, 불투명 픽셀 덩어리를 찾아 칸별로 묶은 경계로 자른다. 프레임 이름과 순서는 `assets/art/v1/README.md`를 따른다.

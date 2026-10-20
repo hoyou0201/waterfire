@@ -94,14 +94,14 @@ canvas {
   font-size: 14px;
 }
 
-/* 캔버스 위에 띄우는 패널 */
+/* 게임 화면 위에 띄우는 패널. 창이 낮아도 잘리지 않게 화면(뷰포트) 기준으로 놓는다 */
 .panel {
-  position: absolute;
+  position: fixed;
   inset: 0;
   margin: auto;
-  width: min(520px, calc(100% - 24px));
+  width: min(520px, calc(100vw - 32px));
   height: fit-content;
-  max-height: calc(100% - 24px);
+  max-height: calc(100vh - 32px);
   overflow: auto;
   padding: 20px;
   border-radius: 12px;
@@ -139,17 +139,8 @@ canvas {
 }
 
 .char-card .char-icon {
-  width: 24px;
-  height: 40px;
-  border-radius: 6px;
-}
-
-.char-card.fire .char-icon {
-  background: var(--fire);
-}
-
-.char-card.water .char-icon {
-  background: var(--water);
+  height: 64px;
+  width: auto;
 }
 
 .char-card.mine.fire {
@@ -196,17 +187,27 @@ canvas {
   color: var(--muted);
 }
 
-.levels .stars {
-  font-size: 12px;
-}
-
 .stars {
-  color: var(--gold);
-  letter-spacing: 2px;
+  display: flex;
+  gap: 2px;
+  min-height: 14px;
 }
 
-.stars .off {
-  color: var(--line);
+.stars img {
+  width: 14px;
+  height: 14px;
+}
+
+.levels .num {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lock {
+  width: 12px;
+  height: 12px;
+  opacity: 0.8;
 }
 
 .hint {
@@ -231,7 +232,7 @@ canvas {
 
 .result {
   text-align: center;
-  width: min(380px, calc(100% - 24px));
+  width: min(380px, calc(100vw - 32px));
 }
 
 .result h2 {
@@ -240,8 +241,14 @@ canvas {
 }
 
 .result .stars {
-  font-size: 32px;
-  margin: 0;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+
+.result .stars img {
+  width: 40px;
+  height: 40px;
 }
 
 .row {
@@ -254,7 +261,7 @@ canvas {
 .menu {
   display: grid;
   gap: 8px;
-  width: min(280px, calc(100% - 24px));
+  width: min(280px, calc(100vw - 32px));
 }
 
 .menu p {

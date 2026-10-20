@@ -29,8 +29,11 @@ export interface LobbyView {
 }
 
 function stars(n: number): string {
-  return "★".repeat(n) + `<span class="off">${"★".repeat(3 - n)}</span>`;
+  const star = (on: boolean) => `<img src="/art/ui/star-${on ? "full" : "empty"}.png" alt="${on ? "★" : "☆"}" />`;
+  return [0, 1, 2].map((i) => star(i < n)).join("");
 }
+
+const LOCK = '<img class="lock" src="/art/ui/locked.png" alt="잠김" />';
 
 /** 로비·결과·메뉴 패널 */
 export class Ui {
@@ -107,9 +110,9 @@ export class Ui {
       const open = isUnlocked(v.progress, l.id);
       const sel = l.id === v.levelId ? " selected" : "";
       return `<li><button type="button" data-id="${l.id}" class="${sel}" ${open ? "" : "disabled"}>
-        <span class="num">${i + 1}${open ? "" : " · 잠김"}</span>
+        <span class="num">${i + 1}${open ? "" : ` ${LOCK}`}</span>
         <span>${l.name}</span>
-        <span class="stars">${rec ? stars(rec.stars) : open ? '<span class="off">★★★</span>' : ""}</span>
+        <span class="stars">${open ? stars(rec?.stars ?? 0) : ""}</span>
       </button></li>`;
     }).join("");
     const level = LEVELS.find((l) => l.id === v.levelId);

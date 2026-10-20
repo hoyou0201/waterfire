@@ -1,0 +1,394 @@
+{
+  "version": 1,
+  "created": "2026-10-21",
+  "tool": "built-in image_gen",
+  "scope": "MVP graphic source art; no game integration",
+  "assets": [
+    {
+      "id": "fire-motion",
+      "file": "characters/fire-motion.png",
+      "name": "불 캐릭터 동작",
+      "requestedGrid": [
+        4,
+        3
+      ],
+      "visualOrder": [
+        "idle-a",
+        "idle-b",
+        "run-a",
+        "run-b",
+        "run-c",
+        "run-d",
+        "jump",
+        "fall",
+        "land",
+        "push",
+        "hurt",
+        "victory"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1088433,
+      "sha256": "63c5ff410dd04d7bacffb7128871ab6cae130defc5956d4aa35da2019035dfde",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1017233,
+        "partialPixels": 551708,
+        "opaquePixels": 3587
+      }
+    },
+    {
+      "id": "water-motion",
+      "file": "characters/water-motion.png",
+      "name": "물 캐릭터 동작",
+      "requestedGrid": [
+        4,
+        3
+      ],
+      "visualOrder": [
+        "idle-a",
+        "idle-b",
+        "run-a",
+        "run-b",
+        "run-c",
+        "run-d",
+        "jump",
+        "fall",
+        "land",
+        "push",
+        "hurt",
+        "victory"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1104166,
+      "sha256": "97827ab5d58468ad8c8124eacff3c2ca88fb403438b694dccf57835bf58ae362",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1009467,
+        "partialPixels": 559121,
+        "opaquePixels": 3940
+      }
+    },
+    {
+      "id": "terrain",
+      "file": "world/terrain.png",
+      "name": "지형",
+      "requestedGrid": [
+        4,
+        4
+      ],
+      "visualOrder": [
+        "top-left",
+        "top-center",
+        "top-right",
+        "interior",
+        "left-wall",
+        "right-wall",
+        "bottom-edge",
+        "isolated-block",
+        "slope-up",
+        "slope-down",
+        "platform-left",
+        "platform-right",
+        "moss-top",
+        "cracked-interior",
+        "pillar-cap",
+        "pillar-body"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1285,
+      "height": 1224,
+      "bytes": 1336991,
+      "sha256": "820788f97f17252932960e0bfd939395b173ddce328db9fd764ef8882195505b",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 776947,
+        "partialPixels": 791577,
+        "opaquePixels": 4316
+      }
+    },
+    {
+      "id": "liquids",
+      "file": "world/liquids.png",
+      "name": "용암·물·독",
+      "requestedGrid": [
+        4,
+        3
+      ],
+      "visualOrder": [
+        "lava-1",
+        "lava-2",
+        "lava-3",
+        "lava-4",
+        "water-1",
+        "water-2",
+        "water-3",
+        "water-4",
+        "poison-1",
+        "poison-2",
+        "poison-3",
+        "poison-4"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1305399,
+      "sha256": "ae8be06441af242002aca71f2a5386a656bf65709e8e012ed293d9f42c9ba2c5",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1108847,
+        "partialPixels": 464017,
+        "opaquePixels": 0
+      }
+    },
+    {
+      "id": "collectibles-exits",
+      "file": "objects/collectibles-exits.png",
+      "name": "보석·출구",
+      "requestedGrid": [
+        4,
+        2
+      ],
+      "visualOrder": [
+        "fire-gem",
+        "water-gem",
+        "fire-exit-idle",
+        "water-exit-idle",
+        "fire-gem-glint",
+        "water-gem-glint",
+        "fire-exit-active",
+        "water-exit-active"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1714919,
+      "sha256": "34f56753e5d6fb3fd2f9bb48bfcc4a0d15f15dcefdbfe95782617f413d4a19ca",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 953181,
+        "partialPixels": 619683,
+        "opaquePixels": 0
+      }
+    },
+    {
+      "id": "mechanisms",
+      "file": "objects/mechanisms.png",
+      "name": "퍼즐 장치",
+      "requestedGrid": [
+        4,
+        3
+      ],
+      "visualOrder": [
+        "yellow-lever-off",
+        "yellow-lever-on",
+        "yellow-button-up",
+        "yellow-button-down",
+        "purple-lever-off",
+        "purple-lever-on",
+        "purple-button-up",
+        "purple-button-down",
+        "wooden-crate",
+        "yellow-platform",
+        "purple-platform",
+        "gate-closed"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 972778,
+      "sha256": "78afb32e0d216d586da4aec5720248315960e46f4d696d9bd31944ba09a6d762",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1019081,
+        "partialPixels": 549051,
+        "opaquePixels": 4396
+      }
+    },
+    {
+      "id": "ui-icons",
+      "file": "ui/icons.png",
+      "name": "UI 아이콘",
+      "requestedGrid": [
+        4,
+        4
+      ],
+      "visualOrder": [
+        "fire",
+        "water",
+        "clock",
+        "restart",
+        "menu",
+        "sound-on",
+        "sound-off",
+        "ready",
+        "connected",
+        "disconnected",
+        "locked",
+        "unlocked",
+        "star-full",
+        "star-empty",
+        "back",
+        "next"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1051256,
+      "sha256": "705c026dcd5ee0e54634d73eb040093ce6abcbf1e6a07a7d9b0e77a1651bdba8",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 970943,
+        "partialPixels": 596536,
+        "opaquePixels": 5049
+      }
+    },
+    {
+      "id": "effects",
+      "file": "effects/events.png",
+      "name": "이벤트 효과",
+      "requestedGrid": [
+        4,
+        5
+      ],
+      "visualOrder": [
+        "fire-out-1",
+        "fire-out-2",
+        "fire-out-3",
+        "fire-out-4",
+        "water-out-1",
+        "water-out-2",
+        "water-out-3",
+        "water-out-4",
+        "poison-out-1",
+        "poison-out-2",
+        "poison-out-3",
+        "poison-out-4",
+        "gem-sparkle-1",
+        "gem-sparkle-2",
+        "gem-sparkle-3",
+        "gem-sparkle-4",
+        "land-dust-1",
+        "land-dust-2",
+        "land-dust-3",
+        "land-dust-4"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 733882,
+      "sha256": "bec73a94457c963ef2373d0d21deb51efc6f9e87f7d6d4237f780128354323df",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1260285,
+        "partialPixels": 309959,
+        "opaquePixels": 2800
+      }
+    },
+    {
+      "id": "background",
+      "file": "world/temple-background.png",
+      "name": "사원 배경",
+      "requestedGrid": null,
+      "visualOrder": [
+        "forest-temple-background"
+      ],
+      "transparentExpected": false,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1635219,
+      "sha256": "dbced1c37a58b8bdaffbfc054deaab7ec1d59e2dc3df039eda4e73fb5b90915a",
+      "pngColorType": 2,
+      "alpha": {
+        "transparentPixels": 0,
+        "partialPixels": 0,
+        "opaquePixels": 1573352
+      }
+    },
+    {
+      "id": "decorations",
+      "file": "world/decorations.png",
+      "name": "배경 장식",
+      "requestedGrid": [
+        4,
+        2
+      ],
+      "visualOrder": [
+        "vine-upper-left",
+        "vine-upper-right",
+        "fern-left",
+        "fern-right",
+        "mossy-rock-a",
+        "mossy-rock-b",
+        "broken-column",
+        "roots"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 1774,
+      "height": 887,
+      "bytes": 931187,
+      "sha256": "1c2867941a1ccc945aaf3aa2a4c065fc6c27a130b7dc829b02fdcaed4f5a872f",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1072913,
+        "partialPixels": 497307,
+        "opaquePixels": 3318
+      }
+    },
+    {
+      "id": "fire-idle",
+      "file": "characters/fire-idle.png",
+      "name": "fire character original",
+      "requestedGrid": null,
+      "visualOrder": [
+        "idle"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 971,
+      "height": 1619,
+      "bytes": 733259,
+      "sha256": "5f929442d98b3f98eb675af34dd7039f05525263ead4f60099d05eb98e16dd95",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1004515,
+        "partialPixels": 565841,
+        "opaquePixels": 1693
+      }
+    },
+    {
+      "id": "water-idle",
+      "file": "characters/water-idle.png",
+      "name": "water character original",
+      "requestedGrid": null,
+      "visualOrder": [
+        "idle"
+      ],
+      "transparentExpected": true,
+      "status": "source-art-not-runtime-atlas",
+      "width": 971,
+      "height": 1620,
+      "bytes": 735712,
+      "sha256": "fbc89ef119485bcdebf310a286e66a89fe581ba7a5791601e70a6a51b10a10cf",
+      "pngColorType": 6,
+      "alpha": {
+        "transparentPixels": 1012015,
+        "partialPixels": 559476,
+        "opaquePixels": 1529
+      }
+    }
+  ]
+}

@@ -1,0 +1,628 @@
+{
+ "scale": 2,
+ "frames": {
+  "button-purple-down": {
+   "x": 188,
+   "y": 369,
+   "w": 60,
+   "h": 23,
+   "anchor": "bottom"
+  },
+  "button-purple-up": {
+   "x": 2,
+   "y": 369,
+   "w": 60,
+   "h": 31,
+   "anchor": "bottom"
+  },
+  "button-yellow-down": {
+   "x": 126,
+   "y": 369,
+   "w": 60,
+   "h": 23,
+   "anchor": "bottom"
+  },
+  "button-yellow-up": {
+   "x": 64,
+   "y": 369,
+   "w": 60,
+   "h": 30,
+   "anchor": "bottom"
+  },
+  "crate": {
+   "x": 2,
+   "y": 303,
+   "w": 64,
+   "h": 64,
+   "anchor": "bottom"
+  },
+  "fire-exit": {
+   "x": 2,
+   "y": 2,
+   "w": 109,
+   "h": 128,
+   "anchor": "bottom"
+  },
+  "fire-exit-active": {
+   "x": 223,
+   "y": 2,
+   "w": 107,
+   "h": 128,
+   "anchor": "bottom"
+  },
+  "fire-fall": {
+   "x": 2,
+   "y": 132,
+   "w": 68,
+   "h": 96,
+   "anchor": "bottom"
+  },
+  "fire-gem": {
+   "x": 1700,
+   "y": 303,
+   "w": 33,
+   "h": 44,
+   "anchor": "bottom"
+  },
+  "fire-gem-glint": {
+   "x": 1770,
+   "y": 303,
+   "w": 34,
+   "h": 44,
+   "anchor": "bottom"
+  },
+  "fire-hurt": {
+   "x": 698,
+   "y": 132,
+   "w": 63,
+   "h": 82,
+   "anchor": "bottom"
+  },
+  "fire-idle-a": {
+   "x": 867,
+   "y": 2,
+   "w": 54,
+   "h": 108,
+   "anchor": "bottom"
+  },
+  "fire-idle-b": {
+   "x": 988,
+   "y": 2,
+   "w": 54,
+   "h": 107,
+   "anchor": "bottom"
+  },
+  "fire-jump": {
+   "x": 349,
+   "y": 132,
+   "w": 58,
+   "h": 92,
+   "anchor": "bottom"
+  },
+  "fire-land": {
+   "x": 857,
+   "y": 132,
+   "w": 66,
+   "h": 80,
+   "anchor": "bottom"
+  },
+  "fire-push": {
+   "x": 618,
+   "y": 132,
+   "w": 78,
+   "h": 87,
+   "anchor": "bottom"
+  },
+  "fire-run-a": {
+   "x": 1327,
+   "y": 2,
+   "w": 65,
+   "h": 100,
+   "anchor": "bottom"
+  },
+  "fire-run-b": {
+   "x": 1111,
+   "y": 2,
+   "w": 66,
+   "h": 104,
+   "anchor": "bottom"
+  },
+  "fire-run-c": {
+   "x": 1533,
+   "y": 2,
+   "w": 69,
+   "h": 98,
+   "anchor": "bottom"
+  },
+  "fire-run-d": {
+   "x": 1604,
+   "y": 2,
+   "w": 64,
+   "h": 98,
+   "anchor": "bottom"
+  },
+  "fire-victory": {
+   "x": 409,
+   "y": 132,
+   "w": 66,
+   "h": 91,
+   "anchor": "bottom"
+  },
+  "fx-dust-1": {
+   "x": 1885,
+   "y": 303,
+   "w": 100,
+   "h": 39,
+   "anchor": "center"
+  },
+  "fx-dust-2": {
+   "x": 933,
+   "y": 230,
+   "w": 122,
+   "h": 69,
+   "anchor": "center"
+  },
+  "fx-dust-3": {
+   "x": 1000,
+   "y": 132,
+   "w": 109,
+   "h": 79,
+   "anchor": "center"
+  },
+  "fx-dust-4": {
+   "x": 1546,
+   "y": 303,
+   "w": 78,
+   "h": 51,
+   "anchor": "center"
+  },
+  "fx-fire-out-1": {
+   "x": 1305,
+   "y": 132,
+   "w": 78,
+   "h": 76,
+   "anchor": "center"
+  },
+  "fx-fire-out-2": {
+   "x": 567,
+   "y": 2,
+   "w": 112,
+   "h": 112,
+   "anchor": "center"
+  },
+  "fx-fire-out-3": {
+   "x": 1740,
+   "y": 2,
+   "w": 106,
+   "h": 98,
+   "anchor": "center"
+  },
+  "fx-fire-out-4": {
+   "x": 778,
+   "y": 230,
+   "w": 80,
+   "h": 70,
+   "anchor": "center"
+  },
+  "fx-poison-out-1": {
+   "x": 860,
+   "y": 230,
+   "w": 71,
+   "h": 69,
+   "anchor": "center"
+  },
+  "fx-poison-out-2": {
+   "x": 681,
+   "y": 2,
+   "w": 122,
+   "h": 111,
+   "anchor": "center"
+  },
+  "fx-poison-out-3": {
+   "x": 161,
+   "y": 132,
+   "w": 102,
+   "h": 95,
+   "anchor": "center"
+  },
+  "fx-poison-out-4": {
+   "x": 130,
+   "y": 303,
+   "w": 64,
+   "h": 61,
+   "anchor": "center"
+  },
+  "fx-sparkle-1": {
+   "x": 1841,
+   "y": 303,
+   "w": 42,
+   "h": 42,
+   "anchor": "center"
+  },
+  "fx-sparkle-2": {
+   "x": 265,
+   "y": 132,
+   "w": 82,
+   "h": 94,
+   "anchor": "center"
+  },
+  "fx-sparkle-3": {
+   "x": 763,
+   "y": 132,
+   "w": 92,
+   "h": 81,
+   "anchor": "center"
+  },
+  "fx-sparkle-4": {
+   "x": 1626,
+   "y": 303,
+   "w": 72,
+   "h": 50,
+   "anchor": "center"
+  },
+  "fx-water-out-1": {
+   "x": 925,
+   "y": 132,
+   "w": 73,
+   "h": 80,
+   "anchor": "center"
+  },
+  "fx-water-out-2": {
+   "x": 443,
+   "y": 2,
+   "w": 122,
+   "h": 114,
+   "anchor": "center"
+  },
+  "fx-water-out-3": {
+   "x": 1924,
+   "y": 2,
+   "w": 104,
+   "h": 97,
+   "anchor": "center"
+  },
+  "fx-water-out-4": {
+   "x": 68,
+   "y": 303,
+   "w": 60,
+   "h": 63,
+   "anchor": "center"
+  },
+  "gate-purple": {
+   "x": 1038,
+   "y": 303,
+   "w": 64,
+   "h": 58,
+   "anchor": "bottom"
+  },
+  "gate-yellow": {
+   "x": 972,
+   "y": 303,
+   "w": 64,
+   "h": 58,
+   "anchor": "bottom"
+  },
+  "lava-1": {
+   "x": 390,
+   "y": 303,
+   "w": 192,
+   "h": 59,
+   "anchor": "center"
+  },
+  "lava-2": {
+   "x": 1773,
+   "y": 132,
+   "w": 192,
+   "h": 71,
+   "anchor": "center"
+  },
+  "lava-3": {
+   "x": 1057,
+   "y": 230,
+   "w": 192,
+   "h": 65,
+   "anchor": "center"
+  },
+  "lava-4": {
+   "x": 584,
+   "y": 230,
+   "w": 192,
+   "h": 70,
+   "anchor": "center"
+  },
+  "lever-purple-off": {
+   "x": 1422,
+   "y": 303,
+   "w": 60,
+   "h": 51,
+   "anchor": "bottom"
+  },
+  "lever-purple-on": {
+   "x": 1484,
+   "y": 303,
+   "w": 60,
+   "h": 51,
+   "anchor": "bottom"
+  },
+  "lever-yellow-off": {
+   "x": 1298,
+   "y": 303,
+   "w": 60,
+   "h": 51,
+   "anchor": "bottom"
+  },
+  "lever-yellow-on": {
+   "x": 1360,
+   "y": 303,
+   "w": 60,
+   "h": 51,
+   "anchor": "bottom"
+  },
+  "platform-purple": {
+   "x": 390,
+   "y": 230,
+   "w": 192,
+   "h": 71,
+   "anchor": "bottom"
+  },
+  "platform-yellow": {
+   "x": 196,
+   "y": 230,
+   "w": 192,
+   "h": 71,
+   "anchor": "bottom"
+  },
+  "poison-1": {
+   "x": 584,
+   "y": 303,
+   "w": 192,
+   "h": 59,
+   "anchor": "center"
+  },
+  "poison-2": {
+   "x": 1111,
+   "y": 132,
+   "w": 192,
+   "h": 76,
+   "anchor": "center"
+  },
+  "poison-3": {
+   "x": 778,
+   "y": 303,
+   "w": 192,
+   "h": 59,
+   "anchor": "center"
+  },
+  "poison-4": {
+   "x": 2,
+   "y": 230,
+   "w": 192,
+   "h": 71,
+   "anchor": "center"
+  },
+  "tile-bottom-edge": {
+   "x": 1647,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-cracked-interior": {
+   "x": 1977,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-interior": {
+   "x": 1449,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-isolated-block": {
+   "x": 1713,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-left-wall": {
+   "x": 1515,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-moss-top": {
+   "x": 1911,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-right-wall": {
+   "x": 1581,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-slope-down": {
+   "x": 1845,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-slope-up": {
+   "x": 1779,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-top-center": {
+   "x": 1317,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-top-left": {
+   "x": 1251,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "tile-top-right": {
+   "x": 1383,
+   "y": 230,
+   "w": 64,
+   "h": 64,
+   "anchor": "center"
+  },
+  "water-1": {
+   "x": 1104,
+   "y": 303,
+   "w": 192,
+   "h": 56,
+   "anchor": "center"
+  },
+  "water-2": {
+   "x": 1385,
+   "y": 132,
+   "w": 192,
+   "h": 75,
+   "anchor": "center"
+  },
+  "water-3": {
+   "x": 196,
+   "y": 303,
+   "w": 192,
+   "h": 60,
+   "anchor": "center"
+  },
+  "water-4": {
+   "x": 1579,
+   "y": 132,
+   "w": 192,
+   "h": 72,
+   "anchor": "center"
+  },
+  "water-exit": {
+   "x": 113,
+   "y": 2,
+   "w": 108,
+   "h": 128,
+   "anchor": "bottom"
+  },
+  "water-exit-active": {
+   "x": 332,
+   "y": 2,
+   "w": 109,
+   "h": 128,
+   "anchor": "bottom"
+  },
+  "water-fall": {
+   "x": 1254,
+   "y": 2,
+   "w": 71,
+   "h": 103,
+   "anchor": "bottom"
+  },
+  "water-gem": {
+   "x": 1735,
+   "y": 303,
+   "w": 33,
+   "h": 44,
+   "anchor": "bottom"
+  },
+  "water-gem-glint": {
+   "x": 1806,
+   "y": 303,
+   "w": 33,
+   "h": 44,
+   "anchor": "bottom"
+  },
+  "water-hurt": {
+   "x": 548,
+   "y": 132,
+   "w": 68,
+   "h": 89,
+   "anchor": "bottom"
+  },
+  "water-idle-a": {
+   "x": 923,
+   "y": 2,
+   "w": 63,
+   "h": 108,
+   "anchor": "bottom"
+  },
+  "water-idle-b": {
+   "x": 805,
+   "y": 2,
+   "w": 60,
+   "h": 110,
+   "anchor": "bottom"
+  },
+  "water-jump": {
+   "x": 1467,
+   "y": 2,
+   "w": 64,
+   "h": 100,
+   "anchor": "bottom"
+  },
+  "water-land": {
+   "x": 477,
+   "y": 132,
+   "w": 69,
+   "h": 90,
+   "anchor": "bottom"
+  },
+  "water-push": {
+   "x": 72,
+   "y": 132,
+   "w": 87,
+   "h": 95,
+   "anchor": "bottom"
+  },
+  "water-run-a": {
+   "x": 1179,
+   "y": 2,
+   "w": 73,
+   "h": 103,
+   "anchor": "bottom"
+  },
+  "water-run-b": {
+   "x": 1044,
+   "y": 2,
+   "w": 65,
+   "h": 106,
+   "anchor": "bottom"
+  },
+  "water-run-c": {
+   "x": 1670,
+   "y": 2,
+   "w": 68,
+   "h": 98,
+   "anchor": "bottom"
+  },
+  "water-run-d": {
+   "x": 1394,
+   "y": 2,
+   "w": 71,
+   "h": 100,
+   "anchor": "bottom"
+  },
+  "water-victory": {
+   "x": 1848,
+   "y": 2,
+   "w": 74,
+   "h": 97,
+   "anchor": "bottom"
+  }
+ }
+}
