@@ -10,10 +10,10 @@
 ## 구조
 
 ```
-packages/shared   결정론적 시뮬레이션(물리·판정)과 레벨 로더. 서버와 클라이언트가 공유
-packages/server   Colyseus 서버. 방 1개, 60Hz 시뮬레이션, 20Hz 스냅샷
-packages/client   Vite + Canvas 2D 클라이언트
-levels/           레벨 JSON
+packages/shared   결정론적 시뮬레이션(물리·판정), 레벨 로더, 기록·별 등급. 서버와 클라이언트가 공유
+packages/server   Colyseus 서버. 방 1개, 로비 → 카운트다운 → 플레이, 60Hz 시뮬레이션, 20Hz 스냅샷
+packages/client   Vite + Canvas 2D 클라이언트. 내 입력을 즉시 반영하는 예측
+levels/           레벨 JSON (tools/genlevels.py로 생성)
 ```
 
 ## 개발
@@ -26,6 +26,7 @@ pnpm typecheck
 ```
 
 `http://localhost:5173`을 브라우저 탭 두 개로 열고 각각 입장하면 혼자서도 테스트할 수 있다. 개발용 암호는 `dev`다.
+로비에서 각자 캐릭터를 고르고 둘 다 "준비"를 누르면 시작한다.
 같은 와이파이에 있는 사람은 `http://<내 IP>:5173`으로 접속할 수 있다.
 
 ## 운영 실행
@@ -44,3 +45,13 @@ ROOM_PASSWORD=<암호> PORT=8080 pnpm start
 | 이동 | ← → 또는 A D |
 | 점프 | ↑ / W / Space |
 | 재시작 | R 1초 길게 누르기 |
+| 메뉴 | Esc |
+
+## 레벨 고치기
+
+```bash
+python3 tools/genlevels.py   # levels/*.json 다시 생성
+pnpm test                    # 모든 레벨을 풀이 스크립트로 깨 보는 테스트 포함
+```
+
+레벨을 바꾸면 `packages/shared/src/solutions.ts`의 풀이도 맞춰야 테스트가 통과한다.
