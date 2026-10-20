@@ -31,14 +31,28 @@ pnpm typecheck
 로비에서 각자 캐릭터를 고르고 둘 다 "준비"를 누르면 시작한다.
 같은 와이파이에 있는 사람은 `http://<내 IP>:5173`으로 접속할 수 있다.
 
-## 운영 실행
+## 이 Mac에서 서버 열기
 
 ```bash
-pnpm build
-ROOM_PASSWORD=<암호> PORT=8080 pnpm start
+pnpm serve
 ```
 
-서버 하나가 빌드된 클라이언트와 WebSocket을 같은 주소에서 제공한다. `ROOM_PASSWORD`를 설정하지 않으면 서버가 시작되지 않는다.
+빌드 → 게임 서버(localhost:8080) → Cloudflare 터널 연결까지 한 번에 하고, Ctrl+C로 모두 끈다. `cloudflared`가 필요하다 (`brew install cloudflared`).
+
+- 접속 암호는 `.env`의 `ROOM_PASSWORD`다. 처음 실행할 때 무작위로 만들어진다. `.env`는 git에 올라가지 않는다.
+- `.env`에 `TUNNEL_NAME`이 없으면 **임시 주소**(`https://…trycloudflare.com`, 실행할 때마다 바뀜)로 열린다. 로그에 나온 주소를 친구에게 보내면 된다.
+- 서버 하나가 빌드된 클라이언트와 WebSocket을 같은 주소에서 제공한다. `ROOM_PASSWORD`가 없으면 서버가 시작되지 않는다.
+
+### 내 도메인으로 고정하기 (예: waterfire.hoyou.dev)
+
+1. Cloudflare(무료)에 도메인을 추가하고, 도메인을 산 곳(가비아 등)에서 네임서버를 Cloudflare가 알려준 값으로 바꾼다.
+2. 터널을 만든다 (처음 한 번):
+   ```bash
+   cloudflared tunnel login
+   cloudflared tunnel create waterfire
+   cloudflared tunnel route dns waterfire waterfire.hoyou.dev
+   ```
+3. `.env`에 `TUNNEL_NAME=waterfire`를 추가하고 `pnpm serve`.
 
 ## 조작
 

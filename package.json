@@ -7,7 +7,8 @@
     "build": "pnpm --filter @waterfire/client build && pnpm --filter @waterfire/server build",
     "start": "pnpm --filter @waterfire/server start",
     "test": "vitest run",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "serve": "bash scripts/serve.sh"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

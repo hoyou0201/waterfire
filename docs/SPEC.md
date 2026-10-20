@@ -315,7 +315,7 @@ levels/     # 레벨 JSON
 
 ## 11. 미결정 사항
 
-- **Q1. 서버 호스팅** (MVP가 돌아간 뒤 결정):
+- ~~Q1. 서버 호스팅~~ → 결정: 플레이할 때만 이 Mac에서 `pnpm serve`로 띄우고 Cloudflare 터널로 연결한다. 내 도메인(`waterfire.hoyou.dev`)은 도메인 DNS를 Cloudflare로 옮긴 뒤 연결한다. 검토했던 선택지:
   - Render 무료 플랜: 15분간 접속이 없으면 잠들고, 다시 깨어나는 데 약 1분 걸린다. 개인용이면 감수할 만하다.
   - Fly.io 등 소액 유료 플랜: 항상 켜져 있고, 월 몇 달러 수준이다.
   - 내 Mac에서 직접 실행 + Cloudflare Tunnel 또는 Tailscale: 무료지만 내 컴퓨터가 켜져 있어야 한다.
