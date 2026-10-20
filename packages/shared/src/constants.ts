@@ -27,3 +27,15 @@ export const JUMP_BUFFER_TICKS = Math.round(0.1 * TICK_RATE);
 export const DEATH_RESET_TICKS = Math.round(0.5 * TICK_RATE);
 /** 웅덩이 판정 영역을 타일 양옆에서 안쪽으로 줄이는 폭. 가장자리를 밟는 건 봐준다 */
 export const LIQUID_INSET = 4;
+
+/** 땅에 선 몸이 걸어서 넘을 수 있는 타일 턱 높이. 경사면 끝을 매끄럽게 넘기 위한 값 */
+export const STEP_UP = 16;
+
+export const BOX_SIZE = TILE;
+/** 이동 발판 기본 속도(타일/초) */
+export const PLATFORM_SPEED = 2;
+/** 버튼이 눌렸다고 보는 가로 폭(px) */
+export const BUTTON_W = 24;
+
+/** 시작 카운트다운(틱) */
+export const COUNTDOWN_TICKS = 3 * TICK_RATE;

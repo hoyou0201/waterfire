@@ -3,6 +3,8 @@
 
 import {
   AIR_CONTROL,
+  BOX_SIZE,
+  BUTTON_W,
   CHAR_H,
   CHAR_W,
   COYOTE_TICKS,
@@ -19,7 +21,8 @@ import {
   MAX_RUN_SPEED,
   TILE,
 } from "./constants.ts";
-import { type Element, type Level, Tile, isLiquid, isSolid, tileAt } from "./level.ts";
+import { type Element, type Level, Tile, isLiquid, tileAt } from "./level.ts";
+import { type Body, type World, moveAxis, movePlatform, snapToSlope, wasBlocked } from "./physics.ts";
 
 export const ELEMENTS: readonly Element[] = ["fire", "water"];
 
@@ -55,6 +58,17 @@ export interface CharState {
   atExit: boolean;
 }
 
+export interface BoxState {
+  x: number;
+  y: number;
+  vy: number;
+}
+
+export interface PlatformState {
+  x: number;
+  y: number;
+}
+
 export type Status = "playing" | "dead" | "won";
 
 export interface GameState {
@@ -65,8 +79,12 @@ export interface GameState {
   statusTicks: number;
   deadChar: Element | null;
   chars: Record<Element, CharState>;
-  /** 레벨의 gems와 같은 순서. 획득했으면 true */
+  /** 아래 배열들은 레벨의 같은 이름 배열과 순서가 같다 */
   gems: boolean[];
+  levers: boolean[];
+  buttons: boolean[];
+  platforms: PlatformState[];
+  boxes: BoxState[];
 }
 
 function spawnChar(level: Level, el: Element): CharState {
@@ -93,6 +111,10 @@ export function createState(level: Level): GameState {
     deadChar: null,
     chars: { fire: spawnChar(level, "fire"), water: spawnChar(level, "water") },
     gems: level.gems.map(() => false),
+    levers: level.levers.map((l) => l.initialOn),
+    buttons: level.buttons.map(() => false),
+    platforms: level.platforms.map((p) => ({ ...p.from })),
+    boxes: level.boxes.map((b) => ({ ...b, vy: 0 })),
   };
 }
 
@@ -101,57 +123,76 @@ export function cloneState(s: GameState): GameState {
     ...s,
     chars: { fire: { ...s.chars.fire }, water: { ...s.chars.water } },
     gems: [...s.gems],
+    levers: [...s.levers],
+    buttons: [...s.buttons],
+    platforms: s.platforms.map((p) => ({ ...p })),
+    boxes: s.boxes.map((b) => ({ ...b })),
   };
 }
 
-/** 길이 size인 구간이 걸치는 타일 범위. 끝 경계에 딱 닿기만 하는 칸은 제외한다 */
-function span(pos: number, size: number): [number, number] {
-  return [Math.floor(pos / TILE), Math.ceil((pos + size) / TILE) - 1];
+/** 채널별로 켜져 있는가. 같은 채널의 스위치 중 하나라도 켜지면 켜진다 */
+export function activeChannels(level: Level, s: GameState): boolean[] {
+  const on = level.channels.map(() => false);
+  level.levers.forEach((l, i) => {
+    if (s.levers[i]) on[l.channel] = true;
+  });
+  level.buttons.forEach((b, i) => {
+    if (s.buttons[i]) on[b.channel] = true;
+  });
+  return on;
+}
+
+interface Bodies {
+  world: World;
+  chars: Record<Element, Body>;
+  boxes: Body[];
+  platforms: Body[];
+}
+
+function buildWorld(level: Level, s: GameState): Bodies {
+  const chars = {
+    fire: { kind: "char", pos: s.chars.fire, w: CHAR_W, h: CHAR_H },
+    water: { kind: "char", pos: s.chars.water, w: CHAR_W, h: CHAR_H },
+  } satisfies Record<Element, Body>;
+  const boxes: Body[] = s.boxes.map((b) => ({ kind: "box", pos: b, w: BOX_SIZE, h: BOX_SIZE }));
+  const platforms: Body[] = s.platforms.map((p, i) => ({ kind: "plat", pos: p, w: level.platforms[i]!.w, h: level.platforms[i]!.h }));
+  return { world: { level, bodies: [...platforms, chars.fire, chars.water, ...boxes] }, chars, boxes, platforms };
 }
 
 function approach(v: number, target: number, delta: number): number {
   return v < target ? Math.min(v + delta, target) : Math.max(v - delta, target);
 }
 
-function moveX(level: Level, c: CharState): void {
-  c.x += c.vx * DT;
-  if (c.vx === 0) return;
-  const [x0, x1] = span(c.x, CHAR_W);
-  const [y0, y1] = span(c.y, CHAR_H);
-  let hit = false;
-  for (let ty = y0; ty <= y1; ty++) {
-    for (let tx = x0; tx <= x1; tx++) {
-      if (!isSolid(tileAt(level, tx, ty))) continue;
-      hit = true;
-      if (c.vx > 0) c.x = Math.min(c.x, tx * TILE - CHAR_W);
-      else c.x = Math.max(c.x, (tx + 1) * TILE);
-    }
-  }
-  if (hit) c.vx = 0;
+function stepPlatforms(level: Level, s: GameState, b: Bodies) {
+  const active = activeChannels(level, s);
+  level.platforms.forEach((def, i) => {
+    const p = s.platforms[i]!;
+    const target = active[def.channel] ? def.to : def.from;
+    const step = def.speed * DT;
+    const dx = approach(p.x, target.x, step) - p.x;
+    const dy = approach(p.y, target.y, step) - p.y;
+    movePlatform(b.world, b.platforms[i]!, "x", dx);
+    movePlatform(b.world, b.platforms[i]!, "y", dy);
+  });
 }
 
-function moveY(level: Level, c: CharState): void {
-  c.y += c.vy * DT;
-  c.onGround = false;
-  if (c.vy === 0) return;
-  const [x0, x1] = span(c.x, CHAR_W);
-  const [y0, y1] = span(c.y, CHAR_H);
-  let hit = false;
-  for (let ty = y0; ty <= y1; ty++) {
-    for (let tx = x0; tx <= x1; tx++) {
-      if (!isSolid(tileAt(level, tx, ty))) continue;
-      hit = true;
-      if (c.vy > 0) c.y = Math.min(c.y, ty * TILE - CHAR_H);
-      else c.y = Math.max(c.y, (ty + 1) * TILE);
-    }
+/** 수직 이동 후 착지·천장 판정과 경사면 붙이기 */
+function fall(world: World, body: Body, vy: number): { vy: number; onGround: boolean } {
+  const dy = vy * DT;
+  const moved = moveAxis(world, body, "y", dy, { push: false, carry: false, stepUp: false });
+  let onGround = false;
+  if (wasBlocked(dy, moved)) {
+    if (dy > 0) onGround = true;
+    vy = 0;
   }
-  if (hit) {
-    if (c.vy > 0) c.onGround = true;
-    c.vy = 0;
+  if (vy >= 0 && snapToSlope(world, body, 0)) {
+    onGround = true;
+    vy = 0;
   }
+  return { vy, onGround };
 }
 
-function stepChar(level: Level, c: CharState, input: Input): void {
+function stepChar(world: World, body: Body, c: CharState, input: Input): void {
   const dir = (input.right ? 1 : 0) - (input.left ? 1 : 0);
   let accel = dir !== 0 ? GROUND_ACCEL : GROUND_DECEL;
   if (!c.onGround) accel *= AIR_CONTROL;
@@ -174,31 +215,67 @@ function stepChar(level: Level, c: CharState, input: Input): void {
     c.jumpCut = true;
   }
   c.jumpHeld = input.jump;
-
   c.vy = Math.min(c.vy + GRAVITY * DT, MAX_FALL_SPEED);
-  moveX(level, c);
-  moveY(level, c);
+
+  const wasGrounded = c.onGround;
+  const dx = c.vx * DT;
+  const movedX = moveAxis(world, body, "x", dx, { push: true, carry: true, stepUp: wasGrounded });
+  if (wasBlocked(dx, movedX)) c.vx = 0;
+  if (wasGrounded && c.vy >= 0) snapToSlope(world, body, Math.abs(dx) + 2);
+
+  const r = fall(world, body, c.vy);
+  c.vy = r.vy;
+  c.onGround = r.onGround;
+}
+
+function stepBox(world: World, body: Body, box: BoxState) {
+  box.vy = Math.min(box.vy + GRAVITY * DT, MAX_FALL_SPEED);
+  box.vy = fall(world, body, box.vy).vy;
+}
+
+function overlapsRect(c: { x: number; y: number }, w: number, h: number, x0: number, y0: number, x1: number, y1: number) {
+  return c.x < x1 && c.x + w > x0 && c.y < y1 && c.y + h > y0;
+}
+
+function stepSwitches(level: Level, s: GameState, b: Bodies) {
+  level.levers.forEach((l, i) => {
+    for (const el of ELEMENTS) {
+      const c = s.chars[el];
+      if (c.vx === 0 || !overlapsRect(c, CHAR_W, CHAR_H, l.x - TILE / 4, l.y - TILE, l.x + TILE / 4, l.y)) continue;
+      s.levers[i] = c.vx > 0;
+    }
+  });
+  level.buttons.forEach((btn, i) => {
+    s.buttons[i] = b.world.bodies.some(
+      (body) =>
+        body.kind !== "plat" &&
+        Math.abs(body.pos.y + body.h - btn.y) < 0.5 &&
+        body.pos.x < btn.x + BUTTON_W / 2 &&
+        body.pos.x + body.w > btn.x - BUTTON_W / 2,
+    );
+  });
 }
 
 /** 발밑 웅덩이 중 이 캐릭터를 죽이는 것이 있는가 */
 function touchesDeadlyLiquid(level: Level, c: CharState, el: Element): boolean {
   if (!c.onGround) return false;
-  const ty = Math.round((c.y + CHAR_H) / TILE);
-  const [x0, x1] = span(c.x, CHAR_W);
-  for (let tx = x0; tx <= x1; tx++) {
+  const bottom = c.y + CHAR_H;
+  const ty = Math.round(bottom / TILE);
+  if (Math.abs(bottom - ty * TILE) > 0.5) return false;
+  const tx0 = Math.floor(c.x / TILE);
+  const tx1 = Math.ceil((c.x + CHAR_W) / TILE) - 1;
+  for (let tx = tx0; tx <= tx1; tx++) {
     const t = tileAt(level, tx, ty);
     if (!isLiquid(t)) continue;
     const safe = (el === "fire" && t === Tile.Lava) || (el === "water" && t === Tile.Water);
     if (safe) continue;
-    const left = tx * TILE + LIQUID_INSET;
-    const right = (tx + 1) * TILE - LIQUID_INSET;
-    if (c.x < right && c.x + CHAR_W > left) return true;
+    if (c.x < (tx + 1) * TILE - LIQUID_INSET && c.x + CHAR_W > tx * TILE + LIQUID_INSET) return true;
   }
   return false;
 }
 
 const GEM_HALF = 8;
-/** 출구 판정 여유(px). 캐릭터가 문 폭 안에 이만큼 삐져나와도 인정한다 */
+/** 출구 판정 여유(px). 캐릭터가 문 폭 밖으로 이만큼 삐져나와도 인정한다 */
 const EXIT_SLACK = 4;
 
 function isAtExit(level: Level, c: CharState, el: Element): boolean {
@@ -211,7 +288,7 @@ function isAtExit(level: Level, c: CharState, el: Element): boolean {
   );
 }
 
-/** 한 틱 진행한 새 상태를 돌려준다. 입력 상태는 바꾸지 않는다 */
+/** 한 틱 진행한 새 상태를 돌려준다. 이전 상태는 바꾸지 않는다 */
 export function step(level: Level, prev: GameState, inputs: Record<Element, Input>): GameState {
   if (prev.status === "dead") {
     if (prev.statusTicks + 1 >= DEATH_RESET_TICKS) return createState(level);
@@ -221,16 +298,18 @@ export function step(level: Level, prev: GameState, inputs: Record<Element, Inpu
 
   const s = cloneState(prev);
   s.tick++;
+  const b = buildWorld(level, s);
 
-  for (const el of ELEMENTS) stepChar(level, s.chars[el], inputs[el]);
+  stepPlatforms(level, s, b);
+  for (const el of ELEMENTS) stepChar(b.world, b.chars[el], s.chars[el], inputs[el]);
+  s.boxes.forEach((box, i) => stepBox(b.world, b.boxes[i]!, box));
+  stepSwitches(level, s, b);
 
   for (const el of ELEMENTS) {
     const c = s.chars[el];
     level.gems.forEach((g, i) => {
       if (s.gems[i] || g.color !== el) return;
-      if (c.x < g.x + GEM_HALF && c.x + CHAR_W > g.x - GEM_HALF && c.y < g.y + GEM_HALF && c.y + CHAR_H > g.y - GEM_HALF) {
-        s.gems[i] = true;
-      }
+      if (overlapsRect(c, CHAR_W, CHAR_H, g.x - GEM_HALF, g.y - GEM_HALF, g.x + GEM_HALF, g.y + GEM_HALF)) s.gems[i] = true;
     });
     c.atExit = isAtExit(level, c, el);
   }

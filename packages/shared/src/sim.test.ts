@@ -39,8 +39,10 @@ describe("sim", () => {
   });
 
   it("벽에 막힌다", () => {
-    const level = makeLevel(FLAT);
-    const s = run(level, createState(level), 120, R);
+    const level = makeLevel(FLAT, { spawns: { fire: [1, 6], water: [4, 1] } });
+    const s0 = run(level, createState(level), 1);
+    s0.chars.water.x = 1000; // 방해되지 않게 치운다
+    const s = run(level, s0, 120, R);
     expect(s.chars.fire.x + 24).toBe(9 * TILE);
     expect(s.chars.fire.vx).toBe(0);
   });
