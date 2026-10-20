@@ -1,10 +1,19 @@
-import test01 from "../../../levels/test-01.json" with { type: "json" };
+import l01 from "../../../levels/01-first-steps.json" with { type: "json" };
+import l02 from "../../../levels/02-poison.json" with { type: "json" };
+import l03 from "../../../levels/03-buttons.json" with { type: "json" };
+import l04 from "../../../levels/04-elevator.json" with { type: "json" };
+import l05 from "../../../levels/05-boxes.json" with { type: "json" };
+import l06 from "../../../levels/06-shoulders.json" with { type: "json" };
+import l07 from "../../../levels/07-slopes.json" with { type: "json" };
+import l08 from "../../../levels/08-piggyback.json" with { type: "json" };
+import l09 from "../../../levels/09-two-levers.json" with { type: "json" };
+import l10 from "../../../levels/10-final.json" with { type: "json" };
 import { type Level, type LevelData, parseLevel } from "./level.ts";
 import type { Progress } from "./progress.ts";
 
 // JSON은 튜플 타입을 추론하지 못해서 LevelData로 단언한다. 형식 검사는 parseLevel이 한다.
 /** 진행 순서대로 */
-const LEVEL_DATA = [test01] as unknown as LevelData[];
+const LEVEL_DATA = [l01, l02, l03, l04, l05, l06, l07, l08, l09, l10] as unknown as LevelData[];
 
 export const LEVELS: readonly Level[] = LEVEL_DATA.map(parseLevel);
 

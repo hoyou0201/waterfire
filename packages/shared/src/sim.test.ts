@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CHAR_H, DEATH_RESET_TICKS, TILE } from "./constants.ts";
 import { type Level, type LevelData, parseLevel } from "./level.ts";
-import { getLevel } from "./levels.ts";
+import { LEVELS } from "./levels.ts";
 import { type GameState, type Input, NO_INPUT, createState, step } from "./sim.ts";
 
 const R: Input = { left: false, right: true, jump: false };
@@ -121,7 +121,7 @@ describe("sim", () => {
   });
 
   it("같은 입력이면 같은 결과가 나온다 (결정론)", () => {
-    const level = getLevel("test-01");
+    const level = LEVELS[0]!;
     const script = (i: number): { fire: Input; water: Input } => ({
       fire: { left: i % 50 < 10, right: i % 37 > 5, jump: i % 23 < 4 },
       water: { left: i % 41 > 20, right: i % 29 < 12, jump: i % 31 < 6 },

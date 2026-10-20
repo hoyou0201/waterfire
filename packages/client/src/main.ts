@@ -219,7 +219,20 @@ requestAnimationFrame(frame);
 
 // 개발 중 브라우저 콘솔에서 상태를 들여다보기 위한 훅
 if (import.meta.env.DEV) {
-  Object.assign(window, { __wf: { predictor, keyboard, get phase() { return phase; }, get players() { return players; } } });
+  Object.assign(window, {
+    __wf: {
+      predictor,
+      keyboard,
+      get phase() {
+        return phase;
+      },
+      get players() {
+        return players;
+      },
+      /** 로비 배경으로 다른 레벨을 그려 본다 */
+      preview: setLevel,
+    },
+  });
 }
 
 // 저장된 로그인 정보가 있으면 바로 입장 시도
