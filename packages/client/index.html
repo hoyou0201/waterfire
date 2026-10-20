@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WaterFire</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main>
+      <canvas id="game"></canvas>
+      <div id="status" class="status" hidden></div>
+    </main>
+
+    <form id="login" class="login">
+      <h1>WaterFire</h1>
+      <label>닉네임 <input name="name" maxlength="16" autocomplete="nickname" required /></label>
+      <label>암호 <input name="password" type="password" autocomplete="current-password" required /></label>
+      <button type="submit">입장</button>
+      <p id="login-error" class="error" role="alert"></p>
+    </form>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

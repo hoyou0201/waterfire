@@ -1,0 +1,17 @@
+{
+  "name": "waterfire",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @waterfire/server --filter @waterfire/client dev",
+    "build": "pnpm --filter @waterfire/client build && pnpm --filter @waterfire/server build",
+    "start": "pnpm --filter @waterfire/server start",
+    "test": "vitest run",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

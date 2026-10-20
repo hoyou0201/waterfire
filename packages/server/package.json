@@ -1,0 +1,22 @@
+{
+  "name": "@waterfire/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "PORT=2567 tsx watch src/index.ts",
+    "build": "tsc -p . --noEmit",
+    "start": "NODE_ENV=production tsx src/index.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@colyseus/core": "^0.18.19",
+    "@colyseus/schema": "^5.0.41",
+    "@colyseus/ws-transport": "^0.18.4",
+    "@waterfire/shared": "workspace:*",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "tsx": "^4.23.15"
+  }
+}

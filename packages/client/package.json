@@ -1,0 +1,17 @@
+{
+  "name": "@waterfire/client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@colyseus/sdk": "^0.18.5",
+    "@waterfire/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^8.3.4"
+  }
+}
